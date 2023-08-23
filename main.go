@@ -65,6 +65,8 @@ func main() {
 		//if err != nil {
 		//	log.Fatal(err)
 		//}
+	} else {
+		fmt.Println("无变化")
 	}
 
 }
