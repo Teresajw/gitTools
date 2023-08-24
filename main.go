@@ -2,11 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/go-git/go-git/v5"
-	"github.com/go-git/go-git/v5/plumbing/object"
-	"github.com/go-git/go-git/v5/plumbing/transport/http"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 )
@@ -55,100 +54,35 @@ func main() {
 	if CurrentDirTotalSize > Gigabyte {
 		fmt.Printf("目录：%s, 大于4G,请缩减不必要文件后再次尝试提交!\n", userdir)
 	} else {
-		// 只获取当前目录
-
-		// 打开当前目录作为仓库
-		repo, err := git.PlainOpen(dir)
+		// 检测用户目录差异
+		output, err := exec.Command("cmd", "/c", "git", "diff", userdir).Output()
 		if err != nil {
-			fmt.Printf("获取工作目录异常,请重试\n %s", err)
-			time.Sleep(5 * time.Second)
+			fmt.Printf("分析目录差异异常：%s,请重试！\n", err)
+			time.Sleep(10 * time.Second)
 			os.Exit(0)
 		}
-
-		// 获取工作树(工作目录)和暂存树的差异
-		wt, err := repo.Worktree()
-
-		if err != nil {
-			fmt.Printf("获取工作目录异常,请重试\n %s", err)
-			time.Sleep(5 * time.Second)
-			os.Exit(0)
-		}
-		start := time.Now()
-		fmt.Println("=====================================================================")
-		fmt.Printf("| 【检测当前文件夹文件是否发生变更，开始时间：%s 】|\n", start.Format("2006-01-02 15:04:05"))
-		diff, err := wt.Status()
-		fmt.Printf("| 【检测完成，耗时：%s 】                                    |\n", time.Since(start))
-		fmt.Println("=====================================================================")
-
-		if err != nil {
-			fmt.Printf("检测工作目录异常,请重试\n %s", err)
-			time.Sleep(5 * time.Second)
-			os.Exit(0)
-		}
-
-		if !diff.IsClean() {
-			// 工作树和暂存区有差异
-			fmt.Println("⛏ ⛏ ⛏ 检测本地文件有变更,变更的文件列表：")
-			flag := 1
-			fmt.Println("------------------------------------")
-			for key, value := range diff {
-				if strings.Contains(key, os.Getenv("GIT_AUTHOR_NAME")) {
-					// 添加所有变化到暂存区
-					_, err = wt.Add(key)
-					if err != nil {
-						fmt.Printf("提交异常,请重试\n %s", err)
-						time.Sleep(5 * time.Second)
-						os.Exit(0)
-					}
-					fmt.Printf("[变更]%d.%-20s   %-20s\n", flag, key, ReversCode(int(value.Worktree)))
-					flag += 1
-				} else {
-					fmt.Printf("[忽略]%d.%-20s   %-20s\n", flag, key, ReversCode(int(value.Worktree)))
-				}
-			}
-			fmt.Println("------------------------------------")
-
-			// 提交
-			commit, err := wt.Commit("提交文件", &git.CommitOptions{
-				Author: &object.Signature{
-					Name:  os.Getenv("GIT_AUTHOR_NAME"),
-					Email: fmt.Sprintf("%s@bot.com", os.Getenv("GIT_AUTHOR_NAME")),
-					When:  time.Now(),
-				},
-			})
-			if err != nil {
-				fmt.Printf("提交异常,请重试\n %s", err)
-				time.Sleep(5 * time.Second)
+		if strings.Contains(string(output), "index") {
+			fmt.Println("⛏ ⛏ ⛏ 检测本地文件有变更,开始提交...")
+			output1, err1 := exec.Command("cmd", "/c", "git", "commit", "-m", fmt.Sprintf("\"用户: %s ,提交文件\"", os.Getenv("GIT_AUTHOR_NAME")), userdir).Output()
+			if err1 != nil {
+				fmt.Printf("提交文件异常：%s,请重试！\n", err1)
+				time.Sleep(10 * time.Second)
 				os.Exit(0)
 			}
-
-			// 使用commit变量
-			_, err = repo.CommitObject(commit)
-			if err != nil {
-				fmt.Printf("提交异常,请重试\n %s", err)
-				time.Sleep(5 * time.Second)
+			fmt.Println(string(output1))
+			output2, err2 := exec.Command("cmd", "/c", "git", "push").Output()
+			if err2 != nil {
+				fmt.Printf("提交文件异常：%s,请重试！\n", err2)
+				time.Sleep(10 * time.Second)
 				os.Exit(0)
 			}
-
+			fmt.Println(string(output2))
+			fmt.Println("✔✔✔ 提交成功！")
 		} else {
 			fmt.Println("☂ ☂ ☂ 本地文件没有变更，请重新打开文件，检查文件内容后再次提交")
 		}
-
-		// 推送到远程
-		err = repo.Push(&git.PushOptions{
-			Auth: &http.BasicAuth{
-				Username: "shareuser",
-				//Username: "Teresajw",
-				//Password: "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",
-				Password: "share123456",
-			},
-		})
-		if err != nil {
-			fmt.Printf("推送异常,请重试\n %s", err)
-			time.Sleep(5 * time.Second)
-			os.Exit(0)
-		}
-		fmt.Println("✔✔✔ 提交成功！")
 	}
-	time.Sleep(5 * time.Second)
+	for {
+		runtime.Gosched()
+	}
 }
