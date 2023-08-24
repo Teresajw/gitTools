@@ -47,6 +47,7 @@ func main() {
 	if err != nil {
 		fmt.Printf("计算目录大小异常,请重试\n %s", err)
 		time.Sleep(5 * time.Second)
+		os.Exit(0)
 	}
 
 	if CurrentDirTotalSize > Gigabyte {
@@ -59,6 +60,7 @@ func main() {
 		if err != nil {
 			fmt.Printf("获取工作目录异常,请重试\n %s", err)
 			time.Sleep(5 * time.Second)
+			os.Exit(0)
 		}
 
 		// 获取工作树(工作目录)和暂存树的差异
@@ -67,6 +69,7 @@ func main() {
 		if err != nil {
 			fmt.Printf("获取工作目录异常,请重试\n %s", err)
 			time.Sleep(5 * time.Second)
+			os.Exit(0)
 		}
 		start := time.Now()
 		fmt.Println("=====================================================================")
@@ -78,6 +81,7 @@ func main() {
 		if err != nil {
 			fmt.Printf("检测工作目录异常,请重试\n %s", err)
 			time.Sleep(5 * time.Second)
+			os.Exit(0)
 		}
 
 		if !diff.IsClean() {
@@ -96,6 +100,7 @@ func main() {
 			if err != nil {
 				fmt.Printf("提交异常,请重试\n %s", err)
 				time.Sleep(5 * time.Second)
+				os.Exit(0)
 			}
 
 			// 提交
@@ -109,6 +114,7 @@ func main() {
 			if err != nil {
 				fmt.Printf("提交异常,请重试\n %s", err)
 				time.Sleep(5 * time.Second)
+				os.Exit(0)
 			}
 
 			// 使用commit变量
@@ -116,13 +122,15 @@ func main() {
 			if err != nil {
 				fmt.Printf("提交异常,请重试\n %s", err)
 				time.Sleep(5 * time.Second)
+				os.Exit(0)
 			}
 
-			// 推送到远程
+			// 推送到远程origin的master分支
 			err = repo.Push(&git.PushOptions{})
 			if err != nil {
 				fmt.Printf("提交异常,请重试\n %s", err)
 				time.Sleep(5 * time.Second)
+				os.Exit(0)
 			}
 			fmt.Println("✔✔✔ 提交成功！")
 		} else {
