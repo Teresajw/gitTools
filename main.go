@@ -35,10 +35,10 @@ func main() {
 	CurrentDirTotalSize := int64(0)
 
 	dir, _ := os.Getwd()
-	gitdir := filepath.Dir(dir)
+	userdir := dir + "\\" + os.Getenv("username")
 
 	//计算当前文件夹大小
-	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(userdir, func(path string, info os.FileInfo, err error) error {
 		if !info.IsDir() {
 			CurrentDirTotalSize += info.Size()
 		}
@@ -51,12 +51,12 @@ func main() {
 	}
 
 	if CurrentDirTotalSize > Gigabyte {
-		fmt.Printf("当前目录：%s, 大于4G,请缩减不必要文件后再次尝试提交!\n", dir)
+		fmt.Printf("目录：%s, 大于4G,请缩减不必要文件后再次尝试提交!\n", userdir)
 	} else {
 		// 只获取当前目录
 
 		// 打开当前目录作为仓库
-		repo, err := git.PlainOpen(gitdir)
+		repo, err := git.PlainOpen(dir)
 		if err != nil {
 			fmt.Printf("获取工作目录异常,请重试\n %s", err)
 			time.Sleep(5 * time.Second)
@@ -94,7 +94,7 @@ func main() {
 				flag += 1
 			}
 			fmt.Println("------------------------------------")
-
+			fmt.Println(userdir)
 			// 添加所有变化到暂存区
 			_, err = wt.Add(".")
 			if err != nil {
