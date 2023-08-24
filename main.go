@@ -87,6 +87,7 @@ func main() {
 			flag := 1
 			fmt.Println("------------------------------------")
 			for key, value := range diff {
+				fmt.Println(value)
 				fmt.Printf("%d.%-20s   %-20s\n", flag, key, ReversCode(int(value.Worktree)))
 				flag += 1
 			}
