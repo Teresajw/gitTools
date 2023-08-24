@@ -53,6 +53,8 @@ func main() {
 	if CurrentDirTotalSize > Gigabyte {
 		fmt.Printf("当前目录：%s, 大于4G,请缩减不必要文件后再次尝试提交!\n", dir)
 	} else {
+		// 只获取当前目录
+	
 		// 打开当前目录作为仓库
 		repo, err := git.PlainOpen(gitdir)
 		if err != nil {
@@ -62,6 +64,7 @@ func main() {
 
 		// 获取工作树(工作目录)和暂存树的差异
 		wt, err := repo.Worktree()
+
 		if err != nil {
 			fmt.Printf("获取工作目录异常,请重试\n %s", err)
 			time.Sleep(5 * time.Second)
