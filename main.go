@@ -99,7 +99,7 @@ func main() {
 			}
 
 			// 提交
-			commit, err := wt.Commit("init", &git.CommitOptions{
+			commit, err := wt.Commit("提交文件", &git.CommitOptions{
 				Author: &object.Signature{
 					Name:  os.Getenv("username"),
 					Email: fmt.Sprintf("%s@bot.com", os.Getenv("username")),
@@ -117,19 +117,14 @@ func main() {
 				fmt.Printf("提交异常,请重试\n %s", err)
 				time.Sleep(5 * time.Second)
 			}
-			fmt.Println("✔✔✔ 提交成功！")
 
-			//// 推送到远程origin的master分支
-			//err = repo.Push(&git.PushOptions{
-			//	RemoteName: "origin",
-			//	RefSpecs: []config.RefSpec{
-			//		"refs/heads/master",
-			//	},
-			//})
-			//if err != nil {
-			//	fmt.Printf("提交异常,请重试\n %s", err)
-			//	time.Sleep(5 * time.Second)
-			//}
+			// 推送到远程
+			err = repo.Push(&git.PushOptions{})
+			if err != nil {
+				fmt.Printf("提交异常,请重试\n %s", err)
+				time.Sleep(5 * time.Second)
+			}
+			fmt.Println("✔✔✔ 提交成功！")
 		} else {
 			fmt.Println("☂ ☂ ☂ 本地文件没有变更，请重新打开文件，检查文件内容后再次提交")
 		}
