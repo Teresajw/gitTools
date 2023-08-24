@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/plumbing/object"
 	"os"
 	"path/filepath"
 	"time"
@@ -101,7 +102,13 @@ func main() {
 			}
 
 			// 提交
-			commit, err := wt.Commit("init", &git.CommitOptions{})
+			commit, err := wt.Commit("init", &git.CommitOptions{
+				Author: &object.Signature{
+					Name:  "John Doe",
+					Email: "john@doe.org",
+					When:  time.Now(),
+				},
+			})
 			if err != nil {
 				fmt.Printf("提交异常,请重试\n %s", err)
 				time.Sleep(5 * time.Second)
