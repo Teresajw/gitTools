@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/config"
-	"log"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -49,7 +48,8 @@ func main() {
 		return err
 	})
 	if err != nil {
-		log.Fatal("计算文件大小异常：", err)
+		fmt.Printf("计算目录大小异常,请重试\n %s", err)
+		time.Sleep(5 * time.Second)
 	}
 
 	if CurrentDirTotalSize > Gigabyte {
@@ -58,13 +58,15 @@ func main() {
 		// 打开当前目录作为仓库
 		repo, err := git.PlainOpen(gitdir)
 		if err != nil {
-			log.Fatal(err)
+			fmt.Printf("获取工作目录异常,请重试\n %s", err)
+			time.Sleep(5 * time.Second)
 		}
 
 		// 获取工作树(工作目录)和暂存树的差异
 		wt, err := repo.Worktree()
 		if err != nil {
-			log.Fatal("获取工作目录异常,请重试", err)
+			fmt.Printf("获取工作目录异常,请重试\n %s", err)
+			time.Sleep(5 * time.Second)
 		}
 		start := time.Now()
 		fmt.Println("=====================================================================")
@@ -74,7 +76,8 @@ func main() {
 		fmt.Println("=====================================================================\n\n")
 
 		if err != nil {
-			log.Fatal("检测工作目录异常,请重试", err)
+			fmt.Printf("检测工作目录异常,请重试\n %s", err)
+			time.Sleep(5 * time.Second)
 		}
 
 		if !diff.IsClean() {
@@ -87,22 +90,26 @@ func main() {
 				flag += 1
 			}
 			fmt.Println("------------------------------------")
+
 			// 添加所有变化到暂存区
 			_, err = wt.Add(".")
 			if err != nil {
-				log.Fatal(err)
+				fmt.Printf("提交异常,请重试\n %s", err)
+				time.Sleep(5 * time.Second)
 			}
 
 			// 提交
 			commit, err := wt.Commit("init", &git.CommitOptions{})
 			if err != nil {
-				log.Fatal("提交失败，请重试！", err)
+				fmt.Printf("提交异常,请重试\n %s", err)
+				time.Sleep(5 * time.Second)
 			}
 
 			// 使用commit变量
 			_, err = repo.CommitObject(commit)
 			if err != nil {
-				log.Fatal("提交失败，请重试！", err)
+				fmt.Printf("提交异常,请重试\n %s", err)
+				time.Sleep(5 * time.Second)
 			}
 			fmt.Println("✔✔✔ 提交成功！")
 
@@ -114,10 +121,11 @@ func main() {
 				},
 			})
 			if err != nil {
-				log.Fatal(err)
+				fmt.Printf("提交异常,请重试\n %s", err)
+				time.Sleep(5 * time.Second)
 			}
 		} else {
-			fmt.Println("☂ ☂ ☂ 本地文件没有变更，请重新打开文件，检查文件内容后再次提交 ")
+			fmt.Println("☂ ☂ ☂ 本地文件没有变更，请重新打开文件，检查文件内容后再次提交")
 		}
 	}
 
