@@ -125,7 +125,7 @@ func main() {
 				os.Exit(0)
 			}
 			fmt.Println("✔✔✔ 提交成功！")
-			
+
 		} else {
 			fmt.Println("☂ ☂ ☂ 本地文件没有变更，请重新打开文件，检查文件内容后再次提交")
 		}
