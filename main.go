@@ -124,17 +124,18 @@ func main() {
 				time.Sleep(5 * time.Second)
 				os.Exit(0)
 			}
-
-			// 推送到远程
-			err = repo.Push(&git.PushOptions{})
-			if err := recover(); err != nil {
-				fmt.Printf("提交异常,请重试\n %s", err)
-				time.Sleep(5 * time.Second)
-				os.Exit(0)
-			}
 			fmt.Println("✔✔✔ 提交成功！")
+			
 		} else {
 			fmt.Println("☂ ☂ ☂ 本地文件没有变更，请重新打开文件，检查文件内容后再次提交")
+		}
+
+		// 推送到远程
+		err = repo.Push(&git.PushOptions{})
+		if err := recover(); err != nil {
+			fmt.Printf("提交异常,请重试\n %s", err)
+			time.Sleep(5 * time.Second)
+			os.Exit(0)
 		}
 	}
 	time.Sleep(5 * time.Second)
