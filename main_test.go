@@ -7,5 +7,5 @@ import (
 )
 
 func TestM(t *testing.T) {
-	fmt.Println(os.Getenv("USER"))
+	fmt.Println(os.Getenv("username"))
 }

@@ -29,8 +29,6 @@ func ReversCode(code int) string {
 }
 
 func main() {
-	//定义一个管道阻塞程序
-	//ch := make(chan int)
 	//定义一个G大小
 	const Gigabyte = 8 << 30
 	//定义当前文件夹大小
@@ -71,11 +69,11 @@ func main() {
 			time.Sleep(5 * time.Second)
 		}
 		start := time.Now()
-		fmt.Printf("=====================================================================")
+		fmt.Println("=====================================================================")
 		fmt.Printf("| 【检测当前文件夹文件是否发生变更，开始时间：%s 】|\n", start.Format("2006-01-02 15:04:05"))
 		diff, err := wt.Status()
 		fmt.Printf("| 【检测完成，耗时：%s 】                                    |\n", time.Since(start))
-		fmt.Printf("=====================================================================\n\n")
+		fmt.Println("=====================================================================")
 
 		if err != nil {
 			fmt.Printf("检测工作目录异常,请重试\n %s", err)
@@ -84,9 +82,9 @@ func main() {
 
 		if !diff.IsClean() {
 			// 工作树和暂存区有差异
-			fmt.Printf("⛏ ⛏ ⛏ 检测本地文件有变更,变更的文件列表：\n")
+			fmt.Println("⛏ ⛏ ⛏ 检测本地文件有变更,变更的文件列表：")
 			flag := 1
-			fmt.Printf("------------------------------------")
+			fmt.Println("------------------------------------")
 			for key, value := range diff {
 				fmt.Printf("%d.%-20s   %-20s\n", flag, key, ReversCode(int(value.Worktree)))
 				flag += 1
@@ -103,8 +101,8 @@ func main() {
 			// 提交
 			commit, err := wt.Commit("init", &git.CommitOptions{
 				Author: &object.Signature{
-					Name:  "John Doe",
-					Email: "john@doe.org",
+					Name:  os.Getenv("username"),
+					Email: fmt.Sprintf("%s@bot.com", os.Getenv("username")),
 					When:  time.Now(),
 				},
 			})
@@ -119,7 +117,7 @@ func main() {
 				fmt.Printf("提交异常,请重试\n %s", err)
 				time.Sleep(5 * time.Second)
 			}
-			fmt.Printf("✔✔✔ 提交成功！\n")
+			fmt.Println("✔✔✔ 提交成功！")
 
 			//// 推送到远程origin的master分支
 			//err = repo.Push(&git.PushOptions{
@@ -133,7 +131,7 @@ func main() {
 			//	time.Sleep(5 * time.Second)
 			//}
 		} else {
-			fmt.Printf("☂ ☂ ☂ 本地文件没有变更，请重新打开文件，检查文件内容后再次提交\n")
+			fmt.Println("☂ ☂ ☂ 本地文件没有变更，请重新打开文件，检查文件内容后再次提交")
 		}
 	}
 	time.Sleep(5 * time.Second)
