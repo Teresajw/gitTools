@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/config"
 	"log"
 	"os"
 	"path/filepath"
@@ -38,7 +39,7 @@ func main() {
 	CurrentDirTotalSize := int64(0)
 
 	dir, _ := os.Getwd()
-	gitdir := filepath.Dir(dir)
+	gitdir := dir
 
 	//计算当前文件夹大小
 	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
@@ -78,11 +79,11 @@ func main() {
 
 		if !diff.IsClean() {
 			// 工作树和暂存区有差异
-			fmt.Println("⛏⛏⛏检测本地文件有变更,变更的文件列表：\n")
+			fmt.Println("⛏ ⛏ ⛏ 检测本地文件有变更,变更的文件列表：\n")
 			flag := 1
 			fmt.Println("------------------------------------")
 			for key, value := range diff {
-				fmt.Printf("%d.%-20s   %-20s\n", flag, key, ReversCode(int(value.Staging)))
+				fmt.Printf("%d.%-20s   %-20s\n", flag, key, ReversCode(int(value.Worktree)))
 				flag += 1
 			}
 			fmt.Println("------------------------------------")
@@ -105,18 +106,18 @@ func main() {
 			}
 			fmt.Println("✔✔✔ 提交成功！")
 
-			//// 推送到远程origin的master分支
-			//err = repo.Push(&git.PushOptions{
-			//	RemoteName: "origin",
-			//	RefSpecs: []config.RefSpec{
-			//		"refs/heads/master",
-			//	},
-			//})
-			//if err != nil {
-			//	log.Fatal(err)
-			//}
+			// 推送到远程origin的master分支
+			err = repo.Push(&git.PushOptions{
+				RemoteName: "origin",
+				RefSpecs: []config.RefSpec{
+					"refs/heads/master",
+				},
+			})
+			if err != nil {
+				log.Fatal(err)
+			}
 		} else {
-			fmt.Println("☂☂☂ 本地文件没有变更，请重新打开文件，检查文件内容后再次提交")
+			fmt.Println("☂ ☂ ☂ 本地文件没有变更，请重新打开文件，检查文件内容后再次提交")
 		}
 	}
 
