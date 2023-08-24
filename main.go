@@ -5,7 +5,6 @@ import (
 	"github.com/go-git/go-git/v5"
 	"os"
 	"path/filepath"
-	"runtime"
 	"time"
 )
 
@@ -110,7 +109,7 @@ func main() {
 				fmt.Printf("提交异常,请重试\n %s", err)
 				time.Sleep(5 * time.Second)
 			}
-			fmt.Println("✔✔✔ 提交成功！")
+			fmt.Println("✔✔✔ 提交成功！\n")
 
 			//// 推送到远程origin的master分支
 			//err = repo.Push(&git.PushOptions{
@@ -124,12 +123,8 @@ func main() {
 			//	time.Sleep(5 * time.Second)
 			//}
 		} else {
-			fmt.Println("☂ ☂ ☂ 本地文件没有变更，请重新打开文件，检查文件内容后再次提交")
+			fmt.Println("☂ ☂ ☂ 本地文件没有变更，请重新打开文件，检查文件内容后再次提交\n")
 		}
 	}
-
-	//阻塞主线程
-	for {
-		runtime.Gosched()
-	}
+	time.Sleep(5 * time.Second)
 }
