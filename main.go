@@ -35,7 +35,7 @@ func main() {
 	CurrentDirTotalSize := int64(0)
 
 	dir, _ := os.Getwd()
-	gitdir := filepath.Dir(dir)
+	//gitdir := filepath.Dir(dir)
 
 	//计算当前文件夹大小
 	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
@@ -56,7 +56,7 @@ func main() {
 		// 只获取当前目录
 
 		// 打开当前目录作为仓库
-		repo, err := git.PlainOpen(gitdir)
+		repo, err := git.PlainOpen(dir)
 		if err != nil {
 			fmt.Printf("获取工作目录异常,请重试\n %s", err)
 			time.Sleep(5 * time.Second)
@@ -123,17 +123,16 @@ func main() {
 				fmt.Printf("提交异常,请重试\n %s", err)
 				time.Sleep(5 * time.Second)
 				os.Exit(0)
+			} else {
+				// 推送到远程origin的master分支
+				err = repo.Push(&git.PushOptions{})
+				if err := recover(); err != nil {
+					fmt.Printf("提交异常,请重试\n %s", err)
+					time.Sleep(5 * time.Second)
+					os.Exit(0)
+				}
+				fmt.Println("✔✔✔ 提交成功！")
 			}
-
-			// 推送到远程origin的master分支
-			err = repo.Push(&git.PushOptions{})
-			if err != nil {
-				fmt.Printf("提交异常,请重试\n %s", err)
-				time.Sleep(5 * time.Second)
-				os.Exit(0)
-			}
-
-			fmt.Println("✔✔✔ 提交成功！")
 		} else {
 			fmt.Println("☂ ☂ ☂ 本地文件没有变更，请重新打开文件，检查文件内容后再次提交")
 		}
