@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/go-git/go-git/v5"
-	"github.com/go-git/go-git/v5/plumbing/object"
 	"os"
 	"path/filepath"
 	"time"
@@ -90,12 +89,18 @@ func main() {
 			flag := 1
 			fmt.Println("------------------------------------")
 			for key, value := range diff {
+				// 添加所有变化到暂存区
+				_, err = wt.Add(key)
+				if err != nil {
+					fmt.Printf("提交异常,请重试\n %s", err)
+					time.Sleep(5 * time.Second)
+					os.Exit(0)
+				}
 				fmt.Printf("%d.%-20s   %-20s\n", flag, key, ReversCode(int(value.Worktree)))
 				flag += 1
 			}
 			fmt.Println("------------------------------------")
-			fmt.Println(userdir)
-			// 添加所有变化到暂存区
+			/*// 添加所有变化到暂存区
 			_, err = wt.Add(".")
 			if err != nil {
 				fmt.Printf("提交异常,请重试\n %s", err)
@@ -123,19 +128,19 @@ func main() {
 				fmt.Printf("提交异常,请重试\n %s", err)
 				time.Sleep(5 * time.Second)
 				os.Exit(0)
-			}
+			}*/
 
 		} else {
 			fmt.Println("☂ ☂ ☂ 本地文件没有变更，请重新打开文件，检查文件内容后再次提交")
 		}
 
-		// 推送到远程
+		/*// 推送到远程
 		err = repo.Push(&git.PushOptions{})
 		if err != nil {
 			fmt.Printf("推送异常,请重试\n %s", err)
 			time.Sleep(5 * time.Second)
 			os.Exit(0)
-		}
+		}*/
 		fmt.Println("✔✔✔ 提交成功！")
 	}
 	time.Sleep(5 * time.Second)
