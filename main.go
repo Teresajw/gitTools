@@ -39,7 +39,7 @@ func main() {
 	CurrentDirTotalSize := int64(0)
 
 	dir, _ := os.Getwd()
-	gitdir := dir
+	gitdir := filepath.Dir(dir)
 
 	//计算当前文件夹大小
 	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
