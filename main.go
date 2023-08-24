@@ -90,6 +90,7 @@ func main() {
 			fmt.Println("------------------------------------")
 			for key, value := range diff {
 				// 添加所有变化到暂存区
+				fmt.Println(key)
 				_, err = wt.Add(key)
 				if err != nil {
 					fmt.Printf("提交异常,请重试\n %s", err)
