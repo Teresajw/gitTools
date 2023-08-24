@@ -54,7 +54,7 @@ func main() {
 		fmt.Printf("当前目录：%s, 大于4G,请缩减不必要文件后再次尝试提交!\n", dir)
 	} else {
 		// 只获取当前目录
-	
+
 		// 打开当前目录作为仓库
 		repo, err := git.PlainOpen(gitdir)
 		if err != nil {
