@@ -124,7 +124,7 @@ func main() {
 				time.Sleep(5 * time.Second)
 				os.Exit(0)
 			} else {
-				// 推送到远程origin的master分支
+				// 推送到远程
 				err = repo.Push(&git.PushOptions{})
 				if err := recover(); err != nil {
 					fmt.Printf("提交异常,请重试\n %s", err)
