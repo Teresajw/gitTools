@@ -71,11 +71,11 @@ func main() {
 			time.Sleep(5 * time.Second)
 		}
 		start := time.Now()
-		fmt.Println("=====================================================================")
+		fmt.Printf("=====================================================================")
 		fmt.Printf("| 【检测当前文件夹文件是否发生变更，开始时间：%s 】|\n", start.Format("2006-01-02 15:04:05"))
 		diff, err := wt.Status()
 		fmt.Printf("| 【检测完成，耗时：%s 】                                    |\n", time.Since(start))
-		fmt.Println("=====================================================================\n\n")
+		fmt.Printf("=====================================================================\n\n")
 
 		if err != nil {
 			fmt.Printf("检测工作目录异常,请重试\n %s", err)
@@ -84,9 +84,9 @@ func main() {
 
 		if !diff.IsClean() {
 			// 工作树和暂存区有差异
-			fmt.Println("⛏ ⛏ ⛏ 检测本地文件有变更,变更的文件列表：\n")
+			fmt.Printf("⛏ ⛏ ⛏ 检测本地文件有变更,变更的文件列表：\n")
 			flag := 1
-			fmt.Println("------------------------------------")
+			fmt.Printf("------------------------------------")
 			for key, value := range diff {
 				fmt.Printf("%d.%-20s   %-20s\n", flag, key, ReversCode(int(value.Worktree)))
 				flag += 1
@@ -119,7 +119,7 @@ func main() {
 				fmt.Printf("提交异常,请重试\n %s", err)
 				time.Sleep(5 * time.Second)
 			}
-			fmt.Println("✔✔✔ 提交成功！\n")
+			fmt.Printf("✔✔✔ 提交成功！\n")
 
 			//// 推送到远程origin的master分支
 			//err = repo.Push(&git.PushOptions{
@@ -133,7 +133,7 @@ func main() {
 			//	time.Sleep(5 * time.Second)
 			//}
 		} else {
-			fmt.Println("☂ ☂ ☂ 本地文件没有变更，请重新打开文件，检查文件内容后再次提交\n")
+			fmt.Printf("☂ ☂ ☂ 本地文件没有变更，请重新打开文件，检查文件内容后再次提交\n")
 		}
 	}
 	time.Sleep(5 * time.Second)
