@@ -35,7 +35,7 @@ func main() {
 	CurrentDirTotalSize := int64(0)
 
 	dir, _ := os.Getwd()
-	//gitdir := filepath.Dir(dir)
+	gitdir := filepath.Dir(dir)
 
 	//计算当前文件夹大小
 	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
@@ -56,7 +56,7 @@ func main() {
 		// 只获取当前目录
 
 		// 打开当前目录作为仓库
-		repo, err := git.PlainOpen(dir)
+		repo, err := git.PlainOpen(gitdir)
 		if err != nil {
 			fmt.Printf("获取工作目录异常,请重试\n %s", err)
 			time.Sleep(5 * time.Second)
