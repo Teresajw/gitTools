@@ -89,6 +89,7 @@ func main() {
 			flag := 1
 			fmt.Println("------------------------------------")
 			for key, value := range diff {
+
 				// 添加所有变化到暂存区
 				fmt.Println(key)
 				_, err = wt.Add(key)
