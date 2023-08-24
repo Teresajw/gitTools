@@ -132,7 +132,7 @@ func main() {
 
 		// 推送到远程
 		err = repo.Push(&git.PushOptions{})
-		if err := recover(); err != nil {
+		if err != nil {
 			fmt.Printf("提交异常,请重试\n %s", err)
 			time.Sleep(5 * time.Second)
 			os.Exit(0)
