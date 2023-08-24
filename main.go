@@ -3,8 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/plumbing/object"
+	"github.com/go-git/go-git/v5/plumbing/transport/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -34,7 +37,7 @@ func main() {
 	CurrentDirTotalSize := int64(0)
 
 	dir, _ := os.Getwd()
-	userdir := dir + "\\" + os.Getenv("username")
+	userdir := dir + "\\" + os.Getenv("GIT_AUTHOR_NAME")
 
 	//计算当前文件夹大小
 	err := filepath.Walk(userdir, func(path string, info os.FileInfo, err error) error {
@@ -89,32 +92,27 @@ func main() {
 			flag := 1
 			fmt.Println("------------------------------------")
 			for key, value := range diff {
-
-				// 添加所有变化到暂存区
-				fmt.Println(key)
-				_, err = wt.Add(key)
-				if err != nil {
-					fmt.Printf("提交异常,请重试\n %s", err)
-					time.Sleep(5 * time.Second)
-					os.Exit(0)
+				if strings.Contains(key, os.Getenv("GIT_AUTHOR_NAME")) {
+					// 添加所有变化到暂存区
+					_, err = wt.Add(key)
+					if err != nil {
+						fmt.Printf("提交异常,请重试\n %s", err)
+						time.Sleep(5 * time.Second)
+						os.Exit(0)
+					}
+					fmt.Printf("[变更]%d.%-20s   %-20s\n", flag, key, ReversCode(int(value.Worktree)))
+					flag += 1
+				} else {
+					fmt.Printf("[忽略]%d.%-20s   %-20s\n", flag, key, ReversCode(int(value.Worktree)))
 				}
-				fmt.Printf("%d.%-20s   %-20s\n", flag, key, ReversCode(int(value.Worktree)))
-				flag += 1
 			}
 			fmt.Println("------------------------------------")
-			/*// 添加所有变化到暂存区
-			_, err = wt.Add(".")
-			if err != nil {
-				fmt.Printf("提交异常,请重试\n %s", err)
-				time.Sleep(5 * time.Second)
-				os.Exit(0)
-			}
 
 			// 提交
 			commit, err := wt.Commit("提交文件", &git.CommitOptions{
 				Author: &object.Signature{
-					Name:  os.Getenv("username"),
-					Email: fmt.Sprintf("%s@bot.com", os.Getenv("username")),
+					Name:  os.Getenv("GIT_AUTHOR_NAME"),
+					Email: fmt.Sprintf("%s@bot.com", os.Getenv("GIT_AUTHOR_NAME")),
 					When:  time.Now(),
 				},
 			})
@@ -130,19 +128,26 @@ func main() {
 				fmt.Printf("提交异常,请重试\n %s", err)
 				time.Sleep(5 * time.Second)
 				os.Exit(0)
-			}*/
+			}
 
 		} else {
 			fmt.Println("☂ ☂ ☂ 本地文件没有变更，请重新打开文件，检查文件内容后再次提交")
 		}
 
-		/*// 推送到远程
-		err = repo.Push(&git.PushOptions{})
+		// 推送到远程
+		err = repo.Push(&git.PushOptions{
+			Auth: &http.BasicAuth{
+				Username: "shareuser",
+				//Username: "Teresajw",
+				//Password: "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",
+				Password: "share123456",
+			},
+		})
 		if err != nil {
 			fmt.Printf("推送异常,请重试\n %s", err)
 			time.Sleep(5 * time.Second)
 			os.Exit(0)
-		}*/
+		}
 		fmt.Println("✔✔✔ 提交成功！")
 	}
 	time.Sleep(5 * time.Second)
