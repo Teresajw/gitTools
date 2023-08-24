@@ -30,7 +30,7 @@ func ReversCode(code int) string {
 
 func main() {
 	//定义一个G大小
-	const Gigabyte = 8 << 30
+	const Gigabyte = 4 << 30
 	//定义当前文件夹大小
 	CurrentDirTotalSize := int64(0)
 
