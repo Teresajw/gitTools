@@ -78,7 +78,7 @@ func main() {
 	}
 
 	if CurrentDirTotalSize > Gigabyte {
-		fmt.Printf("目录：%s, 大于4G,请缩减不必要文件后再次尝试提交!\n", userdir)
+		fmt.Printf("目录：%s, 大于%dG,请缩减不必要文件后再次尝试提交!\n", userdir, Cfg.PersonalStorage)
 	} else {
 		// 检测用户目录差异
 		output, err := exec.Command("cmd", "/c", "git", "diff", userdir).Output()
