@@ -88,7 +88,7 @@ func main() {
 			os.Exit(0)
 		}
 		if strings.Contains(string(output), "index") {
-			fmt.Println("⛏ ⛏ ⛏ 检测本地文件有变更,开始提交...")
+			fmt.Println("ω ω ω 检测个人文件有变更,开始提交...")
 			output1, err1 := exec.Command("cmd", "/c", "git", "commit", "-m", fmt.Sprintf("\"用户: %s ,提交文件\"", os.Getenv("GIT_AUTHOR_NAME")), userdir).Output()
 			if err1 != nil {
 				fmt.Printf("提交文件异常：%s,请重试！\n", err1)
@@ -103,9 +103,9 @@ func main() {
 				os.Exit(0)
 			}
 			fmt.Println(string(output2))
-			fmt.Println("✔ ✔ ✔ 提交成功！")
+			fmt.Println("√ √ √ 提交成功！")
 		} else {
-			fmt.Println("⚙ ⚙ ⚙ 本地文件没有变更，请重新打开文件，检查文件内容后再次提交")
+			fmt.Println("↗ ↗ ↗ 本地文件没有变更，请重新打开文件，检查文件内容后再次提交")
 		}
 	}
 	time.Sleep(20 * time.Second)
