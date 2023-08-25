@@ -103,9 +103,9 @@ func main() {
 				os.Exit(0)
 			}
 			fmt.Println(string(output2))
-			fmt.Println("✔✔✔ 提交成功！")
+			fmt.Println("✔ ✔ ✔ 提交成功！")
 		} else {
-			fmt.Println("☂ ☂ ☂ 本地文件没有变更，请重新打开文件，检查文件内容后再次提交")
+			fmt.Println("⚙ ⚙ ⚙ 本地文件没有变更，请重新打开文件，检查文件内容后再次提交")
 		}
 	}
 	time.Sleep(20 * time.Second)
