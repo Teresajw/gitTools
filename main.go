@@ -3,6 +3,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/spf13/viper"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -29,9 +30,34 @@ func ReversCode(code int) string {
 	}
 }
 
+type Config struct {
+	PersonalStorage int64 `toml:"personalstorage"`
+	CommonStorage   int64 `toml:"commonstorage"`
+}
+
+var Cfg Config
+
+// 配置文件初始化
+func init() {
+	v := viper.New()
+	v.SetConfigName("config")
+	v.SetConfigType("toml")
+	v.AddConfigPath(".")
+	if err := v.ReadInConfig(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			fmt.Printf("配置文件不存在:%v\n", err)
+		} else {
+			fmt.Printf("配置文件存在,解析失败:%v\n", err)
+		}
+	}
+	if err := v.Unmarshal(&Cfg); err != nil {
+		fmt.Println(err)
+	}
+}
+
 func main() {
 	//定义一个G大小
-	const Gigabyte = 4 << 30
+	Gigabyte := Cfg.PersonalStorage << 30
 	//定义当前文件夹大小
 	CurrentDirTotalSize := int64(0)
 
