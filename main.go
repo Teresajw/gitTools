@@ -5,7 +5,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"time"
 )
@@ -82,7 +81,5 @@ func main() {
 			fmt.Println("☂ ☂ ☂ 本地文件没有变更，请重新打开文件，检查文件内容后再次提交")
 		}
 	}
-	for {
-		runtime.Gosched()
-	}
+	time.Sleep(20 * time.Second)
 }
